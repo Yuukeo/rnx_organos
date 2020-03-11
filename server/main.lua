@@ -1,12 +1,13 @@
-ESX 						   = nil
-local CopsConnected       	   = 0
+ESX = nil
+local CopsConnected = 0
 local PlayersHarvestingCerebro = {}
-local PlayersHarvestingCorazon   = {}
-local PlayersHarvestingMedulas  = {}
+local PlayersHarvestingCorazon = {}
+local PlayersHarvestingMedulas = {}
 local PlayersHarvestingInstestinos = {}
-local PlayersHarvestingHuesos   	= {}
-local PlayersTransformingOrgan 	= {}
-local PlayersSellingBody      	= {}
+local PlayersHarvestingHuesos = {}
+local PlayersTransformingOrgan = {}
+local PlayersSellingBody = {}
+
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 function CountCops()
 	local xPlayers = ESX.GetPlayers()
@@ -20,6 +21,7 @@ function CountCops()
 	SetTimeout(5000, CountCops)
 end
 CountCops()
+
 local function HarvestCerebro(source)
 	SetTimeout(5000, function()
 		if PlayersHarvestingCerebro[source] == true then 
@@ -49,6 +51,7 @@ AddEventHandler('rnx_organ:stopHarvestCerebro', function()
 	local _source = source
 	PlayersHarvestingCerebro[_source] = false
 end)
+
 local function HarvestCorazon(source)
 	SetTimeout(5000, function()
 		if PlayersHarvestingCorazon[source] == true then
@@ -65,6 +68,7 @@ local function HarvestCorazon(source)
 		end
 	end)
 end
+
 RegisterServerEvent('rnx_organ:startHarvestCorazon')
 AddEventHandler('rnx_organ:startHarvestCorazon', function()
 	local _source = source
@@ -78,6 +82,7 @@ AddEventHandler('rnx_organ:stopHarvestCorazon', function()
 	local _source = source
 	PlayersHarvestingCorazon[_source] = false
 end)
+
 local function HarvestMedulas(source)
 	SetTimeout(5000, function()
 		if PlayersHarvestingMedulas[source] == true then
@@ -94,6 +99,7 @@ local function HarvestMedulas(source)
 		end
 	end)
 end
+
 RegisterServerEvent('rnx_organ:startHarvestMedulas')
 AddEventHandler('rnx_organ:startHarvestMedulas', function()
 	local _source = source
@@ -101,11 +107,13 @@ AddEventHandler('rnx_organ:startHarvestMedulas', function()
 	TriggerClientEvent('esx:showNotification', _source, _U('pickup_in_prog'))
 	HarvestMedulas(_source)
 end)
+
 RegisterServerEvent('rnx_organ:stopHarvestMedulas')
 AddEventHandler('rnx_organ:stopHarvestMedulas', function()
 	local _source = source
 	PlayersHarvestingMedulas[_source] = false
 end)
+
 local function HarvestInstestinos(source)
 	SetTimeout(5000, function()
 		if PlayersHarvestingInstestinos[source] == true then
@@ -121,6 +129,7 @@ local function HarvestInstestinos(source)
 		end
 	end)
 end
+
 RegisterServerEvent('rnx_organ:startHarvestInstestinos')
 AddEventHandler('rnx_organ:startHarvestInstestinos', function()
 	local _source = source
@@ -128,15 +137,17 @@ AddEventHandler('rnx_organ:startHarvestInstestinos', function()
 	TriggerClientEvent('esx:showNotification', _source, _U('pickup_in_prog'))
 	HarvestInstestinos(_source)
 end)
+
 RegisterServerEvent('rnx_organ:stopHarvestInstestinos')
 AddEventHandler('rnx_organ:stopHarvestInstestinos', function()
 	local _source = source
 	PlayersHarvestingInstestinos[_source] = false
 end)
+
 local function HarvestHuesos(source)
 	SetTimeout(5000, function()
 		if PlayersHarvestingHuesos[source] == true then
-			local xPlayer  = ESX.GetPlayerFromId(source)
+			local xPlayer = ESX.GetPlayerFromId(source)
 			local huesos = xPlayer.getInventoryItem('huesos')
 			if huesos.limit ~= -1 and huesos.count >= huesos.limit then
 				xPlayer.addInventoryItem('huesos', 1)
@@ -148,6 +159,7 @@ local function HarvestHuesos(source)
 		end
 	end)
 end
+
 RegisterServerEvent('rnx_organ:startHarvestHuesos')
 AddEventHandler('rnx_organ:startHarvestHuesos', function()
 	local _source = source
@@ -155,15 +167,17 @@ AddEventHandler('rnx_organ:startHarvestHuesos', function()
 	TriggerClientEvent('esx:showNotification', _source, _U('pickup_in_prog'))
 	HarvestHuesos(_source)
 end)
+
 RegisterServerEvent('rnx_organ:stopHarvestHuesos')
 AddEventHandler('rnx_organ:stopHarvestHuesos', function()
 	local _source = source
 	PlayersHarvestingHuesos[_source] = false
 end)
+
 local function TransformOrgan(source)
     SetTimeout(10000, function()
         if PlayersTransformingOrgan[source] == true then
-            local xPlayer  = ESX.GetPlayerFromId(source)
+            local xPlayer = ESX.GetPlayerFromId(source)
             local huesosQuantity = xPlayer.getInventoryItem('huesos').count
             local poochQuantity = xPlayer.getInventoryItem('cuerpo').count
             local cerebroQuantity = xPlayer.getInventoryItem('cerebro').count
@@ -186,6 +200,7 @@ local function TransformOrgan(source)
         end
     end)
 end
+
 RegisterServerEvent('rnx_organ:startTransformOrgan')
 AddEventHandler('rnx_organ:startTransformOrgan', function()
 	local _source = source
@@ -193,11 +208,13 @@ AddEventHandler('rnx_organ:startTransformOrgan', function()
 	TriggerClientEvent('esx:showNotification', _source, _U('packing_in_prog'))
 	TransformOrgan(_source)
 end)
+
 RegisterServerEvent('rnx_organ:stopTransformOrgan')
 AddEventHandler('rnx_organ:stopTransformOrgan', function()
 	local _source = source
 	PlayersTransformingOrgan[_source] = false
 end)
+
 local function SellBody(source)
 	if CopsConnected < Config.RequiredCopsBody then
 		TriggerClientEvent('esx:showNotification', source, _U('act_imp_police') .. CopsConnected .. '/' .. Config.RequiredCopsBody)
@@ -235,6 +252,7 @@ local function SellBody(source)
 		end
 	end)
 end
+
 RegisterServerEvent('rnx_organ:startSellBody')
 AddEventHandler('rnx_organ:startSellBody', function()
 	local _source = source
@@ -242,6 +260,7 @@ AddEventHandler('rnx_organ:startSellBody', function()
 	TriggerClientEvent('esx:showNotification', _source, _U('sale_in_prog'))
 	SellBody(_source)
 end)
+
 RegisterServerEvent('rnx_organ:stopSellBody')
 AddEventHandler('rnx_organ:stopSellBody', function()
 
@@ -250,6 +269,7 @@ AddEventHandler('rnx_organ:stopSellBody', function()
 	PlayersSellingBody[_source] = false
 
 end)
+
 RegisterServerEvent('rnx_organ:GetUserInventory')
 AddEventHandler('rnx_organ:GetUserInventory', function(currentZone)
 	local _source = source
